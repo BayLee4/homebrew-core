@@ -1,8 +1,8 @@
 class Elm < Formula
   desc "Functional programming language for building browser-based GUIs"
   homepage "https://elm-lang.org"
-  url "https://github.com/elm/compiler/archive/refs/tags/0.19.2.tar.gz"
-  sha256 "745b1edfea2f8e3b36cf6f77ae3b59fd86e8e397d427971f6d903f9fce6163a5"
+  url "https://github.com/elm/compiler/archive/refs/tags/0.19.3.tar.gz"
+  sha256 "e051f8700578a0920024ba9eb3496df6336119058ef996579b1b4a574b8313fa"
   license "BSD-3-Clause"
 
   bottle do
@@ -27,11 +27,17 @@ class Elm < Formula
     depends_on "zlib-ng-compat"
   end
 
+  deny_network_access!
+
+  def fetch
+    system "cabal", "v2-update"
+    system "cabal", "v2-build", "elm", "--only-download", *std_cabal_v2_args(installdir: false)
+  end
+
   def install
     # Following the process from the Dockerfile for building elm binaries here:
     #  https://github.com/elm/compiler/blob/main/installers/linux/Dockerfile
     # This process does not use `cabal install`
-    system "cabal", "update"
     system "cabal", "v2-build", "elm", *std_cabal_v2_args(installdir: false)
     bin.install Utils.safe_popen_read("cabal", "list-bin", "elm").chomp
   end
