@@ -1,10 +1,21 @@
 class Node < Formula
   desc "Open-source, cross-platform JavaScript runtime environment"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v26.12.0/node-v26.12.0.tar.xz"
-  sha256 "ce59f9038dda0e637656fb1c36cf52c07c637922fd81d419dbba2ec129afbd35"
   license "MIT"
+  revision 1
   head "https://github.com/nodejs/node.git", branch: "main"
+
+  stable do
+    url "https://nodejs.org/dist/v26.12.0/node-v26.12.0.tar.xz"
+    sha256 "ce59f9038dda0e637656fb1c36cf52c07c637922fd81d419dbba2ec129afbd35"
+
+    # https://github.com/v8/v8/commit/f607706154eabc4a949628a88b38dbe95cd2274c
+    patch do
+      file "Patches/node/icu4c-79.patch"
+      directory "deps/v8"
+      type :cherry_pick
+    end
+  end
 
   livecheck do
     url "https://nodejs.org/dist/"
@@ -27,7 +38,7 @@ class Node < Formula
   depends_on "brotli"
   depends_on "c-ares"
   depends_on "hdrhistogram_c"
-  depends_on "icu4c@78"
+  depends_on "icu4c@79"
   depends_on "libffi" # System `libffi` is missing some definitions used by node
   depends_on "libnghttp2"
   depends_on "libuv"
